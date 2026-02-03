@@ -1,0 +1,12 @@
+# workflow configuration file
+# This file controls global behaviour of the workflow CLI and can be overridden by environment variables or command-line flags.
+# Paths should correspond to your OS conventions.
+# Modify as needed
+
+paths:
+  data: ~/.workflow
+  workflows: ~/.workflow/workflows
+  logs: ~/.workflow/logs
+  database: ~/.workflow/workflow.db
+
+log_level: info
