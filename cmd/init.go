@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/joelfokou/workflow/internal/config"
 	"github.com/joelfokou/workflow/internal/logger"
@@ -39,8 +40,16 @@ var initCmd = &cobra.Command{
 		}
 		store.Close()
 
-		// Initialise config file if it doesn't exist
+		// Initialise config file & parent directories, if they don't exist
 		cfgFile := config.ConfigFile()
+		cfgDir := path.Dir(cfgFile)
+
+		if err := os.MkdirAll(cfgDir, 0755); err != nil {
+			logger.L().Error("failed to create platform configuration directory for user config", zap.String("path", cfgDir), zap.Error(err))
+
+			return fmt.Errorf("failed to create platform configuration directory for user config: %w", err)
+		}
+
 		if _, err := os.Stat(cfgFile); os.IsNotExist(err) {
 			defaultConfig := config.DefaultConfig()
 			if err := os.WriteFile(cfgFile, []byte(defaultConfig), 0644); err != nil {
